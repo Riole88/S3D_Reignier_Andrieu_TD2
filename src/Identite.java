@@ -1,9 +1,9 @@
 public class Identite {
-    private String NIP;
-    private String nom;
-    private String prenom;
+    private final String NIP;
+    private final String nom;
+    private final String prenom;
 
-    public Identite(String NIP,String nom,String prenom) {
+    public Identite(String NIP, String nom, String prenom) {
         this.NIP = NIP;
         this.nom = nom;
         this.prenom = prenom;

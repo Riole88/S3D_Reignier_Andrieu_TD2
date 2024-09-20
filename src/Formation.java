@@ -2,28 +2,28 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class Formation {
-    private String idt;
+    private final String idt;
 
-    private HashMap<String, Double> matiere;
+    private final HashMap<String, Double> matiere;
 
-    public Formation(String idFormation){
+    public Formation(String idFormation) {
         this.idt = idFormation;
         this.matiere = new HashMap<String, Double>();
     }
 
-    public void ajouteMatiere(String mat, double coef){
-        this.matiere.put(mat,coef);
+    public void ajouteMatiere(String mat, double coef) {
+        this.matiere.put(mat, coef);
     }
 
-    public void supMatiere(String mat, double coef){
-        if (this.matiere.containsKey(mat)){
+    public void supMatiere(String mat, double coef) {
+        if (this.matiere.containsKey(mat)) {
             this.matiere.remove(mat, coef);
         }
     }
 
-    public double getCoef(String mat){
+    public double getCoef(String mat) {
         double res = -1;
-        if (this.matiere.containsKey(mat)){
+        if (this.matiere.containsKey(mat)) {
             res = this.matiere.get(mat);
         }
         return res;
