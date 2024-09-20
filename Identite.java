@@ -17,8 +17,8 @@ public class Identite {
         return nom;
     }
 
-    public Identite(String prenom) {
-        this.prenom = prenom;
+    public String getPrenom() {
+        return prenom;
     }
 
     @Override
