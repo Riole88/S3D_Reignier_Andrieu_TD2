@@ -1,10 +1,11 @@
 import java.util.Map;
 import java.util.HashMap;
+import java.util.*;
 
 public class Etudiant {
     private final Identite identite;
     private final Formation formation;
-    private final Map<String, Double> resultat;
+    private final Map<String, List<Double>> resultat;
 
     public Etudiant(Identite identite, Formation formation) {
         this.identite = identite;
@@ -15,7 +16,7 @@ public class Etudiant {
     public void ajouterNote(String matiere, double note) {
         if (note >= 0 && note <= 20) {
             if (formation.getMatiere().containsKey(matiere)) {
-                resultat.put(matiere, note);
+                resultat.computeIfAbsent(matiere, k -> new ArrayList<>()).add(note);
             } else {
                 System.out.println("Matière inexistante dans la formation.");
             }
@@ -26,7 +27,17 @@ public class Etudiant {
 
     public double calculMoyenne(String matiere) {
         if (formation.getMatiere().containsKey(matiere) && resultat.containsKey(matiere)) {
-            return resultat.get(matiere);
+            List<Double> notes = resultat.get(matiere);
+            if (notes != null && !notes.isEmpty()) {
+                double somme = 0.0;
+                for (double note : notes) {
+                    somme += note;
+                }
+                return somme / notes.size();
+            } else {
+                System.out.println("Pas de notes pour cette matière.");
+                return 0.0;
+            }
         } else {
             System.out.println("Matière inexistante ou note absente pour cette matière.");
             return 0.0;
@@ -38,11 +49,16 @@ public class Etudiant {
         double sommeCoeff = 0.0;
 
         for (String matiere : resultat.keySet()) {
-            double note = resultat.get(matiere);
+            List<Double> notes = resultat.get(matiere);
             double coef = formation.getCoef(matiere);
 
-            if (coef > 0) {
-                sommeNotes += note * coef;
+            if (coef > 0 && notes != null && !notes.isEmpty()) {
+                double sommeMatiere = 0.0;
+                for (double note : notes) {
+                    sommeMatiere += note;
+                }
+                double moyenneMatiere = sommeMatiere / notes.size();
+                sommeNotes += moyenneMatiere * coef;
                 sommeCoeff += coef;
             } else {
                 System.out.println("Coefficient invalide ou matière absente dans la formation : " + matiere);
@@ -55,5 +71,9 @@ public class Etudiant {
         } else {
             return sommeNotes / sommeCoeff;
         }
+    }
+
+    public Map<String, List<Double>> getResultat() {
+        return resultat;
     }
 }
