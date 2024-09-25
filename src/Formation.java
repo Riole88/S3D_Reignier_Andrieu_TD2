@@ -40,4 +40,8 @@ public class Formation {
                 ", matiere=" + matiere +
                 '}';
     }
+
+    public String getIdt() {
+        return idt;
+    }
 }

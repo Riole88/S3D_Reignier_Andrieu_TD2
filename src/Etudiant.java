@@ -76,4 +76,8 @@ public class Etudiant {
     public Map<String, List<Double>> getResultat() {
         return resultat;
     }
+
+    public Formation getFormation() {
+        return formation;
+    }
 }
