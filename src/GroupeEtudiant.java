@@ -1,34 +1,41 @@
 import java.util.ArrayList;
 import java.util.List;
+import Exception.InsertionInvalidGroupeEtudiant;
 
 public class GroupeEtudiant {
-    ArrayList<Etudiant> groupeE ;
-    Formation formation;
+    private ArrayList<Etudiant> groupeE;
+    private Formation formation;
 
-    public GroupeEtudiant(Formation f1) {
-        this.groupeE = new ArrayList<Etudiant>();
-        this.formation=f1;
+    public GroupeEtudiant(Formation formation) {
+        this.groupeE = new ArrayList<>();
+        this.formation = formation;
     }
-    public void ajouterE(Etudiant e)  {
-        if (e.getFormation().getIdt().equals(formation.getIdt()) ){
+
+    // Ajout d'un étudiant dans le groupe avec gestion de l'exception
+    public void ajouterE(Etudiant e) throws InsertionInvalidGroupeEtudiant {
+        if (e.getFormation().getIdt().equals(formation.getIdt())) {
             groupeE.add(e);
-
+            System.out.println("Étudiant ajouté au groupe.");
         } else {
-            System.out.println("l'étudiant n'est pas dans la formation");
+            throw new InsertionInvalidGroupeEtudiant("Erreur : L'étudiant n'est pas dans la formation " + formation.getIdt());
         }
-
-
-    }
-    public void supprimerE(Etudiant e){
-        groupeE.remove(e);
     }
 
+    // Suppression d'un étudiant du groupe
+    public void supprimerE(Etudiant e) {
+        if (groupeE.remove(e)) {
+            System.out.println("Étudiant supprimé du groupe.");
+        } else {
+            System.out.println("Erreur : Étudiant non trouvé dans le groupe.");
+        }
+    }
 
-
-    public List<Etudiant> getEtudiant(){
+    // Retourne la liste des étudiants du groupe
+    public List<Etudiant> getEtudiant() {
         return groupeE;
     }
 
+    // Affichage du groupe et de sa formation
     @Override
     public String toString() {
         return "GroupeEtudiant{" +
