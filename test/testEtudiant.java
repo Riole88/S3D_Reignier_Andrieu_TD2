@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import Exception.*;
 
 public class testEtudiant {
 
@@ -20,7 +21,6 @@ public class testEtudiant {
         f1.ajouteMatiere("Management SI", 2);
         f1.ajouteMatiere("DevWeb", 1);
         f1.ajouteMatiere("Anglais", -1);
-        f1.ajouteMatiere("Communication", -1);
         e1 = new Etudiant(i1, f1);
     }
 
@@ -31,45 +31,59 @@ public class testEtudiant {
     }
 
     @Test
-    public void test_ajouterNote_normal(){
-        e1.ajouterNote("DevWeb", 12);
-        Map<String, List<Double>> res = e1.getResultat();
-        List<Double> notesDevWeb = res.get("DevWeb");
-        assertEquals(12,notesDevWeb.get(0), "Le resultat doit être 12.0 car cela répresente la note de la matière ajouté");
+    public void test_ajouterNote_normal() throws ExceptionMatiereInexistante, ExceptionNoteInvalide{
+        ArrayList<Double> res = new ArrayList<>();
+        res.add(15.5);
+        e1.ajouterNote("DevWeb", 15.5);
+        List<Resultat> resultats = e1.getResultat();
+        assertEquals(res,resultats.get(0).getNoteMatiere(),"Le résultat obtenu doit être 15.5");
     }
 
     @Test
     public void test_ajouterNote_noteSup(){
-        e1.ajouterNote("DevWeb", 21);
-        Map<String, List<Double>> res = e1.getResultat();
-        List<Double> notesDevWeb = res.get("DevWeb");
-        assertNull(notesDevWeb, "La matière ne doit pas contenir de note car la note était supérieur à 20");
+        //On regarde si on obtient une exception en ajoutant une note supérieur à 20
+        //Cela doit renvoyer true si on obtient une exception
+        assertThrows(ExceptionNoteInvalide.class, () ->{
+            e1.ajouterNote("DevWeb", 21.5);
+        });
     }
 
     @Test
     public void test_ajouterNote_noteInf(){
-        e1.ajouterNote("DevWeb", -1);
-        Map<String, List<Double>> res = e1.getResultat();
-        List<Double> notesDevWeb = res.get("DevWeb");
-        assertNull(notesDevWeb, "La matière ne doit pas contenir de note car la note était inférieur à 0");
+        //On regarde si on obtient une exception en ajoutant une note négatif
+        //Cela doit renvoyer true si on obtient une exception
+        assertThrows(ExceptionNoteInvalide.class, () ->{
+            e1.ajouterNote("DevWeb", -1.5);
+        });
     }
 
     @Test
-    public void test_calculMoyenne_normal(){
-        e1.ajouterNote("DevWeb", 11);
-        e1.ajouterNote("DevWeb", 9);
-        double res = e1.calculMoyenne("DevWeb");
-        assertEquals(10,res,"La moyenne doit être à 10");
+    public void test_ajouterNote_Matiere_Inexistante(){
+        //On regarde si on obtient une exception en ajoutant une note supérieur à 20
+        //Cela doit renvoyer true si on obtient une exception
+        assertThrows(ExceptionMatiereInexistante.class, () ->{
+            e1.ajouterNote("Communication", 12.5);
+        });
+    }
+
+    @Test
+    public void test_calculMoyenne_normal() throws ExceptionMatiereInexistante, ExceptionNoteInvalide{
+        e1.ajouterNote("DevWeb", 12);
+        e1.ajouterNote("DevWeb", 8);
+        assertEquals(10, e1.calculMoyenne("DevWeb"),"La moyenne doit être égal à 10");
     }
 
     @Test
     public void test_calculMoyenne_aucune_matiere(){
-        double res = e1.calculMoyenne("DevWeb");
-        assertEquals(0,res,"La moyenne doit être à 0 car la matière n'a pas de note");
+        //On regarde si on obtient une exception en calculant la moyenne d'un matiere qui n'a aucune note
+        //Cela doit renvoyer true si on obtient une exception
+        assertThrows(ExceptionMatiereInexistante.class, () ->{
+            e1.calculMoyenne("Communication");
+        });
     }
 
     @Test
-    public void test_calculMoyenneG_normal(){
+    public void test_MoyenneG_normal()throws ExceptionMatiereInexistante, ExceptionCoefInvalide, ExceptionNoteInvalide{
         e1.ajouterNote("DevWeb", 9);
         e1.ajouterNote("Management SI", 12);
         double res = e1.calculMoyenneG();
@@ -77,19 +91,11 @@ public class testEtudiant {
     }
 
     @Test
-    public void test_calculMoyenneG_1coefNegatif(){
-        e1.ajouterNote("DevWeb", 9);
-        e1.ajouterNote("Anglais", 20);
-        double res = e1.calculMoyenneG();
-        assertEquals(9,res,"La moyenne doit être à 9 car la note d'anglais ne compte pas");
+    public void test_calculMoyenneG_coefNegatif(){
+        assertThrows(ExceptionCoefInvalide.class, () ->{
+            e1.ajouterNote("DevWeb", 9);
+            e1.ajouterNote("Anglais", 20);
+            double res = e1.calculMoyenneG();
+        });
     }
-
-    @Test
-    public void test_calculMoyenneG_coefNegatifPartout(){
-        e1.ajouterNote("Communication", 9);
-        e1.ajouterNote("Anglais", 20);
-        double res = e1.calculMoyenneG();
-        assertEquals(0,res,"La moyenne doit être à 0 car aucune des 2 matière a un coef possible");
-    }
-
 }

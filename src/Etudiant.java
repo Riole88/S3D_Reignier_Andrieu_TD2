@@ -1,58 +1,86 @@
 import java.util.Map;
 import java.util.HashMap;
 import java.util.*;
+import Exception.*;
+
 
 public class Etudiant {
     private final Identite identite;
     private final Formation formation;
-    private final Map<String, List<Double>> resultat;
+    private final List<Resultat> resultat;
 
     public Etudiant(Identite identite, Formation formation) {
         this.identite = identite;
         this.formation = formation;
-        this.resultat = new HashMap<>();
+        this.resultat = new ArrayList<Resultat>();
     }
 
-    public void ajouterNote(String matiere, double note) {
-        if (note >= 0 && note <= 20) {
-            if (formation.getMatiere().containsKey(matiere)) {
-                resultat.computeIfAbsent(matiere, k -> new ArrayList<>()).add(note);
-            } else {
-                System.out.println("Matière inexistante dans la formation.");
+    public void ajouterNote(String matiere, double note) throws ExceptionMatiereInexistante, ExceptionNoteInvalide {
+        if (note < 0 || note > 20) {
+            throw new ExceptionNoteInvalide("La note doit être entre 0 et 20");
+        }
+
+        if (!formation.getMatiere().containsKey(matiere)) {
+            throw new ExceptionMatiereInexistante("Matière inexistante");
+        }
+
+        boolean resultatExistant = false;
+        for (Resultat r : resultat) {
+            if (r.getIdMatiere().equals(matiere)) {
+                r.ajoutNote(note);
+                resultatExistant = true;
+                break;
             }
-        } else {
-            System.out.println("La note doit être entre 0 et 20.");
+        }
+
+        if (!resultatExistant) {
+            Resultat nouveauRes = new Resultat(matiere);
+            nouveauRes.ajoutNote(note);
+            resultat.add(nouveauRes);
         }
     }
 
-    public double calculMoyenne(String matiere) {
-        if (formation.getMatiere().containsKey(matiere) && resultat.containsKey(matiere)) {
-            List<Double> notes = resultat.get(matiere);
-            if (notes != null && !notes.isEmpty()) {
-                double somme = 0.0;
-                for (double note : notes) {
-                    somme += note;
+    public double calculMoyenne(String matiere) throws ExceptionMatiereInexistante  {
+        if (!formation.getMatiere().containsKey(matiere)) {
+            throw new ExceptionMatiereInexistante("Matière inexistante");
+        }
+
+        for (Resultat r : resultat) {
+            if (r.getIdMatiere().equals(matiere)) {
+                List<Double> notes = r.getNoteMatiere();
+                if (!notes.isEmpty()) {
+                    double somme = 0.0;
+                    for (double note : notes) {
+                        somme += note;
+                    }
+                    return somme / notes.size();
                 }
-                return somme / notes.size();
-            } else {
-                System.out.println("Pas de notes pour cette matière.");
-                return 0.0;
             }
-        } else {
-            System.out.println("Matière inexistante ou note absente pour cette matière.");
-            return 0.0;
         }
+
+        throw new ExceptionMatiereInexistante("Aucune note pour cette matière");
     }
 
-    public double calculMoyenneG() {
+    public double calculMoyenneG() throws ExceptionMatiereInexistante, ExceptionCoefInvalide {
         double sommeNotes = 0.0;
         double sommeCoeff = 0.0;
 
-        for (String matiere : resultat.keySet()) {
-            List<Double> notes = resultat.get(matiere);
+        for (Resultat res : resultat) {
+            String matiere = res.getIdMatiere();
+
+            if (!formation.getMatiere().containsKey(matiere)) {
+                throw new ExceptionMatiereInexistante("Matière inexistante : " + matiere);
+            }
+
             double coef = formation.getCoef(matiere);
 
-            if (coef > 0 && notes != null && !notes.isEmpty()) {
+            // Vérifie si le coefficient est valide
+            if (coef <= 0) {
+                throw new ExceptionCoefInvalide("Coefficient invalide pour la matière : " + matiere);
+            }
+
+            List<Double> notes = res.getNoteMatiere();
+            if (!notes.isEmpty()) {
                 double sommeMatiere = 0.0;
                 for (double note : notes) {
                     sommeMatiere += note;
@@ -60,20 +88,17 @@ public class Etudiant {
                 double moyenneMatiere = sommeMatiere / notes.size();
                 sommeNotes += moyenneMatiere * coef;
                 sommeCoeff += coef;
-            } else {
-                System.out.println("Coefficient invalide ou matière absente dans la formation : " + matiere);
             }
         }
 
         if (sommeCoeff == 0) {
-            System.out.println("Pas de coefficients valides pour calculer la moyenne générale.");
-            return 0.0;
-        } else {
-            return sommeNotes / sommeCoeff;
+            throw new ExceptionCoefInvalide("Aucun coefficient valide trouvé pour calculer la moyenne générale");
         }
+
+        return sommeNotes / sommeCoeff;
     }
 
-    public Map<String, List<Double>> getResultat() {
+    public List<Resultat> getResultat() {
         return resultat;
     }
 
