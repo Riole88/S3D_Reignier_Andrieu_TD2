@@ -10,6 +10,7 @@ public class testGroupeEtudiant {
     private Etudiant etudiant1;
     private Etudiant etudiant2;
     private Etudiant etudiant3;
+    private Etudiant etudiant4;
 
     @BeforeEach
     public void setUp() {
@@ -26,6 +27,7 @@ public class testGroupeEtudiant {
         etudiant1 = new Etudiant(new Identite("1234", "Andrieu","Paul"), formationDACS);
         etudiant2 = new Etudiant(new Identite("87665", "Martin","Ronot"), formationDACS);
         etudiant3 = new Etudiant(new Identite("0976", "Theo","Vautrin"), formationDWM);
+        etudiant4 = new Etudiant(new Identite("16589","Leroy", "Jenkins"),formationDACS);
 
         // Initialisation des groupes
         groupeDACS = new GroupeEtudiant(formationDACS);
@@ -67,5 +69,33 @@ public class testGroupeEtudiant {
     public void testSuppressionEtudiantNonExistant() {
         groupeDACS.supprimerE(etudiant3);  // Étudiant qui n'a jamais été ajouté
         assertFalse(groupeDACS.getEtudiant().contains(etudiant3), "L'étudiant Théo Vautrin ne devrait pas exister dans le groupe DACS.");
+    }
+
+    @Test
+    public void test_triAlpha() throws InsertionInvalidGroupeEtudiant{
+        //Ajout des étudiants dans un ordre non défini
+        groupeDACS.ajouterE(etudiant4);
+        groupeDACS.ajouterE(etudiant2);
+        groupeDACS.ajouterE(etudiant1);
+        //Utilisation de la méthode de tri
+        groupeDACS.triAlpha();
+        //Vérification de l'ordre de la liste du groupe étudiant
+        assertEquals(etudiant1, groupeDACS.getEtudiant().get(0));
+        assertEquals(etudiant4, groupeDACS.getEtudiant().get(1));
+        assertEquals(etudiant2, groupeDACS.getEtudiant().get(2));
+    }
+
+    @Test
+    public void test_triAntiAlpha() throws InsertionInvalidGroupeEtudiant{
+        //Ajout des étudiants dans un ordre non défini
+        groupeDACS.ajouterE(etudiant4);
+        groupeDACS.ajouterE(etudiant1);
+        groupeDACS.ajouterE(etudiant2);
+        //Utilisation de la méthode de tri
+        groupeDACS.triAntiAlpha();
+        //Vérification de l'ordre de la liste du groupe étudiant
+        assertEquals(etudiant2, groupeDACS.getEtudiant().get(0));
+        assertEquals(etudiant4, groupeDACS.getEtudiant().get(1));
+        assertEquals(etudiant1, groupeDACS.getEtudiant().get(2));
     }
 }

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import Exception.InsertionInvalidGroupeEtudiant;
 
@@ -42,5 +43,13 @@ public class GroupeEtudiant {
                 "groupeE=" + groupeE +
                 ", formation=" + formation +
                 '}';
+    }
+
+    public void triAlpha() {
+        groupeE.sort(Comparator.comparing((Etudiant e) -> e.getIdentite().getNom()));
+    }
+
+    public void triAntiAlpha() {
+        groupeE.sort(Comparator.comparing((Etudiant e) -> e.getIdentite().getNom()).reversed());
     }
 }
