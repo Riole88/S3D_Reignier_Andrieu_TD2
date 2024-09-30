@@ -42,7 +42,7 @@ public class Etudiant {
 
     public double calculMoyenne(String matiere) throws ExceptionMatiereInexistante  {
         if (!formation.getMatiere().containsKey(matiere)) {
-            throw new ExceptionMatiereInexistante("Matière inexistante.");
+            throw new ExceptionMatiereInexistante("Matière inexistante");
         }
 
         for (Resultat r : resultat) {
@@ -58,7 +58,7 @@ public class Etudiant {
             }
         }
 
-        throw new ExceptionMatiereInexistante("Aucune note pour cette matière.");
+        throw new ExceptionMatiereInexistante("Aucune note pour cette matière");
     }
 
     public double calculMoyenneG() throws ExceptionMatiereInexistante, ExceptionCoefInvalide {
@@ -92,7 +92,7 @@ public class Etudiant {
         }
 
         if (sommeCoeff == 0) {
-            throw new ExceptionCoefInvalide("Aucun coefficient valide trouvé pour calculer la moyenne générale.");
+            throw new ExceptionCoefInvalide("Aucun coefficient valide trouvé pour calculer la moyenne générale");
         }
 
         return sommeNotes / sommeCoeff;
