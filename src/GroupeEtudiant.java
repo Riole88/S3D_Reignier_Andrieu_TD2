@@ -1,10 +1,7 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import Exception.InsertionInvalidGroupeEtudiant;
-import Exception.ExceptionCoefInvalide;
-import Exception.ExceptionNoteInvalide;
-import Exception.ExceptionMatiereInexistante;
+import Exception.*;
 
 public class GroupeEtudiant {
     private ArrayList<Etudiant> groupeE;
@@ -19,18 +16,17 @@ public class GroupeEtudiant {
     public void ajouterE(Etudiant e) throws InsertionInvalidGroupeEtudiant {
         if (e.getFormation().getIdt().equals(formation.getIdt())) {
             groupeE.add(e);
-            System.out.println("Étudiant ajouté au groupe.");
         } else {
             throw new InsertionInvalidGroupeEtudiant("Erreur : L'étudiant n'est pas dans la formation " + formation.getIdt());
         }
     }
 
     // Suppression d'un étudiant du groupe
-    public void supprimerE(Etudiant e) {
+    public void supprimerE(Etudiant e) throws ExceptionEtudiantNonTrouve{
         if (groupeE.remove(e)) {
             System.out.println("Étudiant supprimé du groupe.");
         } else {
-            System.out.println("Erreur : Étudiant non trouvé dans le groupe.");
+            throw new ExceptionEtudiantNonTrouve("Etudiant non trouvé");
         }
     }
 

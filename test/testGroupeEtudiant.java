@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import Exception.InsertionInvalidGroupeEtudiant;
+import Exception.*;
 
 public class testGroupeEtudiant {
 
@@ -57,7 +57,7 @@ public class testGroupeEtudiant {
 
 
     @Test
-    public void testSuppressionEtudiant() throws InsertionInvalidGroupeEtudiant {
+    public void testSuppressionEtudiant() throws InsertionInvalidGroupeEtudiant, ExceptionEtudiantNonTrouve{
         groupeDACS.ajouterE(etudiant2);
         assertTrue(groupeDACS.getEtudiant().contains(etudiant2), "L'étudiant Martin Ronot devrait être ajouté au groupe DACS.");
 
@@ -66,9 +66,10 @@ public class testGroupeEtudiant {
     }
 
     @Test
-    public void testSuppressionEtudiantNonExistant() {
-        groupeDACS.supprimerE(etudiant3);  // Étudiant qui n'a jamais été ajouté
-        assertFalse(groupeDACS.getEtudiant().contains(etudiant3), "L'étudiant Théo Vautrin ne devrait pas exister dans le groupe DACS.");
+    public void testSuppressionEtudiantNonExistant(){
+        assertThrows(ExceptionEtudiantNonTrouve.class, () ->{
+            groupeDACS.supprimerE(etudiant3);
+        });
     }
 
     @Test
