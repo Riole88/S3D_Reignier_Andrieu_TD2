@@ -99,4 +99,29 @@ public class testGroupeEtudiant {
         assertEquals(etudiant4, groupeDACS.getEtudiant().get(1));
         assertEquals(etudiant1, groupeDACS.getEtudiant().get(2));
     }
+
+    @Test
+    public void test_tri_merite()throws Exception{
+        //Ajout des étudiants dans le groupe
+        groupeDACS.ajouterE(etudiant4);
+        groupeDACS.ajouterE(etudiant1);
+        groupeDACS.ajouterE(etudiant2);
+
+        //Ajout des notes
+        etudiant1.ajouterNote("Programmation",16);
+        etudiant2.ajouterNote("Programmation",10);
+        etudiant4.ajouterNote("Programmation", 4);
+
+        etudiant1.ajouterNote("Algorithmes",17);
+        etudiant2.ajouterNote("Algorithmes",10);
+        etudiant4.ajouterNote("Algorithmes",5);
+
+        //Appel de la méthode
+        groupeDACS.triParMerite();
+
+        //Vérification de l'ordre du groupe
+        assertEquals(etudiant1, groupeDACS.getEtudiant().get(0));
+        assertEquals(etudiant2, groupeDACS.getEtudiant().get(1));
+        assertEquals(etudiant4, groupeDACS.getEtudiant().get(2));
+    }
 }

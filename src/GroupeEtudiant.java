@@ -92,4 +92,16 @@ public class GroupeEtudiant {
     public void triAntiAlpha() {
         groupeE.sort(Comparator.comparing((Etudiant e) -> e.getIdentite().getNom()).reversed());
     }
+
+    public void triParMerite() throws ExceptionCoefInvalide, ExceptionMatiereInexistante {
+        groupeE.sort((Etudiant e1, Etudiant e2) -> {
+            try {
+                double moyenne1 = e1.calculMoyenneG();
+                double moyenne2 = e2.calculMoyenneG();
+                return Double.compare(moyenne2, moyenne1);
+            } catch (ExceptionCoefInvalide | ExceptionMatiereInexistante e) {
+                return 0;
+            }
+        });
+    }
 }
